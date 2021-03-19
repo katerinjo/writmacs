@@ -20,10 +20,6 @@ from .parse import parse
 from .macros import expanders, organizers, contextualizers
 from .util import TARGETS
 
-# expanders = macros.expanders
-# organizers = macros.organizers
-# contextualizers = macros.contextualizers
-
 class Node:
     def __init__(self, name, children, child_names={}):
         self.name = name
