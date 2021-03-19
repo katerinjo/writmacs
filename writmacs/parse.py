@@ -1,8 +1,3 @@
-import os
-from pathlib import Path
-import pprint
-import sys
-
 INTERPOLATE = '%'
 TERMINATE = ';'
 BRACKETS = {

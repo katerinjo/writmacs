@@ -24,14 +24,6 @@ expanders = macros.expanders
 organizers = macros.organizers
 contextualizers = macros.contextualizers
 
-# try:
-#     import custom
-#     expanders = {**expanders, **custom.expanders}
-#     organizers = {**organizers, **custom.organizers}
-# except ModuleNotFoundError:
-#     print('No custom module found.')
-
-
 class Node:
     def __init__(self, name, children, child_names={}):
         self.name = name
@@ -121,20 +113,16 @@ def eval_tree(mac_tree, metadata=None, collapse=True):
         metadata = {**inner_data, **metadata} # shallower > deeper
 
     if mac_tree.name in expanders:
-        print('chosen expander:', expanders[mac_tree.name])
         builder, *more_data = expanders[mac_tree.name](
                 children, metadata
                 )
-        # print('got from builder for', mac_tree.name, ':', builder)
         if len(more_data) == 1:
             metadata = {**more_data[0], **metadata}
     else:
         builder = [chunk for child in children for chunk in child]
     if collapse:
-        print('\nFINAL BUILDER:', builder)
         return ''.join([str(chunk) for chunk in builder]), metadata
     else:
-        print('builder passed back by eval_tree', builder)
         return builder, metadata
 
 def expand(main_txt, target='md'):

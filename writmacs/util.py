@@ -116,11 +116,6 @@ def simple_macro(trans_fun):
     '(builder -> [builder, meta]) -> (fields , metadata -> builder)'
     def fun(fields, _):
         builder = []
-        # for item in fields:
-        #     if type(item) is str:
-        #         builder.extend(trans_fun(item))
-        #     else:
-        #         builder.extend(item)
         return trans_fun(fields[-1])
     return fun
 
@@ -137,15 +132,7 @@ def multi_macro(format2fun):
     def fun(fields, metadata):
         # when in doubt do nothing
         if not metadata['target'] in format2fun:
-            return fields[-1]
-        # chosen = format2fun[metadata['target']]
-        # builder = []
-        # for item in fields:
-        #     if type(item) is str:
-        #         builder.extend(chosen(item))
-        #     else:
-        #         builder.extend(item)
-        # print('multi_macro_fun builder', builder)
+            return fields[-1], {}
         return format2fun[metadata['target']](fields[-1])
     return fun
 
@@ -187,7 +174,6 @@ def keymapper(keymap_name):
 def taggifier(tag, **kwargs):
     'str -> (builder -> [builder, meta])'
     def out_fun(builder):
-        print('builder to tag', builder)
         prefix_builder = ['<' + tag]
         for k, v in kwargs.items():
             prefix_builder.append(f' {k.lower()}="{v}"')

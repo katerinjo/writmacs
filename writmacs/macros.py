@@ -1,14 +1,6 @@
-# import os
-# from pathlib import Path
 from random import random, randint
 from util import *
 
-# home = Path.home()
-# this_file = Path(os.path.realpath(__file__))
-# file_dir = this_file.parent
-# trans_dir = file_dir / 'transforms'
-
-# [content], {target} -> builder
 emphasis = multi_macro({
             ('md', 'txt'): wrapper('*'),
             ('html',): taggifier('em')
