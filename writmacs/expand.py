@@ -16,13 +16,13 @@
 
 import sys
 
-from parse import parse
-import macros
-from util import TARGETS
+from .parse import parse
+from .macros import expanders, organizers, contextualizers
+from .util import TARGETS
 
-expanders = macros.expanders
-organizers = macros.organizers
-contextualizers = macros.contextualizers
+# expanders = macros.expanders
+# organizers = macros.organizers
+# contextualizers = macros.contextualizers
 
 class Node:
     def __init__(self, name, children, child_names={}):

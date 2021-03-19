@@ -1,5 +1,5 @@
 from random import random, randint
-from util import *
+from .util import *
 
 emphasis = multi_macro({
             ('md', 'txt'): wrapper('*'),

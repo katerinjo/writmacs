@@ -1,4 +1,4 @@
-from expand import expand
+from writmacs import expand
 
 simple_html = {
     'Hello, %em{world}!': 'Hello, <em>world</em>!',
