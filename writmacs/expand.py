@@ -145,7 +145,7 @@ if __name__ == '__main__':
     mac_txt = sys.stdin.read()
     target = sys.argv[1] if len(sys.argv) > 1 else None
     if target not in TARGETS:
-        target = 'chat'
+        target = 'md'
     result, metadata = expand(mac_txt)
 
     print(result)
