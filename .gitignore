@@ -1,0 +1,6 @@
+*.py[cod]
+*HIDE*
+/*.egg-info
+/dist/
+/notes/
+__pycache__/
