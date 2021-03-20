@@ -54,7 +54,7 @@ smallcaps = multi_macro(
     })
 
 def snippet(fields, metadata):
-    snip_name = fields[0]
+    snip_name = ''.join(fields[0])
     if snip_name not in snippet_cache:
         snippet_cache.update(load_snippets())
     if snip_name not in snippet_cache:
