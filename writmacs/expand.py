@@ -18,36 +18,7 @@ import sys
 
 from .parse import parse
 from .macros import expanders, organizers, contextualizers
-from .util import TARGETS
-
-class Node:
-    def __init__(self, name, children, child_names={}):
-        self.name = name
-        self.children = children
-        self.fields = child_names
-
-    def __getitem__(self, key):
-        if type(key) is int:
-            return self.children[key]
-        try:
-            return self.children[self.fields[key]]
-        except:
-            raise KeyError
-
-    def to_str(self, depth=0):
-        builder = ['\n«' + '-' * depth + f':{self.name}:']
-        for ix in range(len(self.children)):
-            builder.extend(['\n' + '-' * depth + f'[{ix}]\n'])
-            for chunk in self.children[ix]:
-                if type(chunk) is str:
-                    builder.append(chunk)
-                else:
-                    builder.append(chunk.to_str(depth+1))
-        builder.append('»')
-        return ''.join(builder)
-
-    def __str__(self):
-        return self.to_str()
+from .util import TARGETS, Node
 
 def AST2tree(syntax_node):
     name = syntax_node['name']
