@@ -8,12 +8,10 @@ import re
 from typing import TypeVar, Sequence, Mapping, Callable, Any, Tuple
 
 
+### Constants
+
 TARGETS = set(['html', 'md', 'txt']) # TODO: should this be an enum?
 LETTERS = set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-
-keymap_cache = {}
-    # currently not very cachey, TODO: lazier loading or something
-snippet_cache = {}
 
 CONFIG_DIR = Path.home() / '.config'
 if not CONFIG_DIR.exists():
@@ -28,8 +26,9 @@ KEYMAPS_DIR = WRITMACS_DIR / 'keymaps'
 if not KEYMAPS_DIR.exists():
     KEYMAPS_DIR.mkdir()
 
+# (constants continued at end of file)
 
-# Types:
+### Types:
 
 class Keymap:
 
@@ -39,6 +38,26 @@ class Keymap:
         for in_txt in mapping.keys():
             for depth in range(1, len(in_txt)):
                 self.hints.add(in_txt[:depth])
+
+
+class DB:
+
+    def __init__(self, fetch):
+        self.fetch = fetch
+        self.cache = {}
+
+    def __getitem__(self, key):
+        if key in self.cache:
+            return self.cache[key]
+
+        self.cache.update(self.fetch(key))
+        if key in self.cache:
+            return self.cache[key]
+
+        return None
+
+    def __contains__(self, key):
+        return self[key] is not None
 
 
 class Token:
@@ -93,7 +112,7 @@ BuilderMod = Callable[[Builder], Tuple[Builder, Metadata]]
 Macro = Callable[[Sequence[Builder], Metadata], Tuple[Builder, Metadata]]
 
 
-#   Loading User-Configured Data:
+### Loading User-Configured Data:
 
 def unescape(string: str) -> str:
     """
@@ -147,18 +166,18 @@ def load_unicode_mapping(path: Path, alias_sep: str = None) -> dict:
             mapping[alias] = after
     return mapping
 
-
-def load_keymap(name: str) -> Keymap:
-    """
-    Load a keymap from the user's configuration.
-    """
-    keymap_dict = {}
-    rows = load_unicode_tsv(KEYMAPS_DIR / f'{name}.tsv')
-    for fields in rows:
-        if len(fields) < 2:
-            continue
-        keymap_dict[fields[0]] = fields[1]
-    return Keymap(keymap_dict)
+# # oops, looks like an accidental duplicate
+# def load_keymap(name: str) -> Keymap:
+#     """
+#     Load a keymap from the user's configuration.
+#     """
+#     keymap_dict = {}
+#     rows = load_unicode_tsv(KEYMAPS_DIR / f'{name}.tsv')
+#     for fields in rows:
+#         if len(fields) < 2:
+#             continue
+#         keymap_dict[fields[0]] = fields[1]
+#     return Keymap(keymap_dict)
 
 
 def load_all_mappings(parent_dir: Path, alias_sep: str = None) -> dict:
@@ -184,7 +203,7 @@ def load_keymap(name: str) -> Keymap:
     return Keymap(load_unicode_mapping(KEYMAPS_DIR / f'{name}.tsv'))
 
 
-#   Macro Makers:
+### Macro Makers:
 
 def simple_macro(
         trans_fun: Callable[[Builder], Tuple[Builder, Metadata]]) -> Macro:
@@ -226,16 +245,16 @@ def multi_macro(format2fun: Mapping[str, BuilderMod]) -> Macro:
     return fun
 
 
-#   Builder Modifier Makers:
+### Builder Modifier Makers:
 
 def keymapper(keymap_name: str) -> BuilderMod:
     """
     Given the name of a Keymap, produce a function that applies the
     Keymap to lists of strings.
     """
-    if keymap_name not in keymap_cache:
-        keymap_cache[keymap_name] = load_keymap(keymap_name)
-    keymap = keymap_cache[keymap_name]
+    # if keymap_name not in KEYMAP_CACHE:
+    #     KEYMAP_CACHE[keymap_name] = load_keymap(keymap_name)
+    keymap = KEYMAP_CACHE[keymap_name]
     def fun(chunks):
         builder = []
         for txt in chunks:
@@ -297,4 +316,14 @@ def wrapper(prefix: str, suffix: str = None) -> BuilderMod:
     def fun(builder):
         return [Token(prefix), *builder, Token(suffix)], {}
     return fun
+
+
+### Constants Again Because Python's Limited Hoisting Can't Handle This
+
+KEYMAP_CACHE = DB(lambda k: {k: load_keymap)
+
+# load all snippets regardless of request
+# because discrimination unimplemented
+SNIPPET_CACHE = DB(lambda _: load_snippets)
+
 

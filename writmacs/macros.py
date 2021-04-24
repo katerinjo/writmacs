@@ -55,18 +55,16 @@ smallcaps = multi_macro(
 
 def snippet(fields, metadata):
     snip_name = ''.join(fields[0])
-    if snip_name not in snippet_cache:
-        snippet_cache.update(load_snippets())
-    if snip_name not in snippet_cache:
+    if snip_name not in SNIPPET_CACHE:
         return snip_name
     elif metadata['target'] == 'md': # working with markdown, need escapes
-        snippet = (snippet_cache[snip_name]
+        snippet = (SNIPPET_CACHE[snip_name]
                 .replace('\\', r'\\')
                 .replace('_', r'\_')
                 .replace('*', r'\*'))
         return snippet, {}
     else:
-        return snippet_cache[snip_name], {}
+        return SNIPPET_CACHE[snip_name], {}
 
 def title(fields, metadata):
     return [], {'title': fields[0]}
