@@ -4,6 +4,7 @@ Basic classes/types, constants, and helper functions.
 
 
 from pathlib import Path
+import pkgutil
 import re
 from typing import TypeVar, Sequence, Mapping, Callable, Any, Tuple
 
@@ -106,7 +107,7 @@ Builder = Sequence[TypeVar('S', str, Token)]
 Forest = Sequence[TypeVar('T', str, Node)]
 Metadata = dict
 # TODO: "TextMod" suggests analogous return type to BuilderMod
-#       That's confusing, come up with better names.
+#       Come up with better names.
 TextMod = Callable[[str], str]
 BuilderMod = Callable[[Builder], Tuple[Builder, Metadata]]
 Macro = Callable[[Sequence[Builder], Metadata], Tuple[Builder, Metadata]]
@@ -119,14 +120,15 @@ def unescape(string: str) -> str:
     Interpret and interpolate Python backslash characters in unicode
     string.
     """
-    string = (string.replace(r'\t', '\t')
+    string = (string
+        .replace(r'\t', '\t')
         .replace(r'\b', '\b')
         .replace(r'\n', '\n')
         .replace(r'\r', '\r')
         .replace(r'\f', '\f')
-        .replace(r"\'", "'")
-        .replace(r'\"', '"')
-        .replace('\\\\', '\\'))
+    )
+    string = re.sub(r'\\(.)', r'\1', string)
+
     def repl(match):
         return chr(int(match.group(1), 16))
     string = re.sub(r'\\u(.{4})', repl, string)
@@ -134,14 +136,13 @@ def unescape(string: str) -> str:
     return string
 
 
-def load_unicode_tsv(path: Path) -> list:
+def load_unicode_tsv(tsv: str) -> list:
     """
     Load tab-separated value file given by path, escaping backslash
     characters.
     """
-    raw = path.read_text()
     lines = [
-        ln for ln in raw.split('\n')
+        ln for ln in tsv.split('\n')
         if not ln.startswith('#') and '\t' in ln
     ]
     rows = [ln.split('\t') for ln in lines]
@@ -151,13 +152,7 @@ def load_unicode_tsv(path: Path) -> list:
     return unicode_rows
 
 
-def load_unicode_mapping(path: Path, alias_sep: str = None) -> dict:
-    """
-    Load a mapping from str to str from a file, escaping backslash
-    characters.
-    """
-    'path , str? -> {str -> str}'
-    rows = load_unicode_tsv(path)
+def rows2mapping(rows, alias_sep: str = None) -> dict:
     mapping = {}
     for row in rows:
         before, after, *__ = row
@@ -166,41 +161,45 @@ def load_unicode_mapping(path: Path, alias_sep: str = None) -> dict:
             mapping[alias] = after
     return mapping
 
-# # oops, looks like an accidental duplicate
-# def load_keymap(name: str) -> Keymap:
-#     """
-#     Load a keymap from the user's configuration.
-#     """
-#     keymap_dict = {}
-#     rows = load_unicode_tsv(KEYMAPS_DIR / f'{name}.tsv')
-#     for fields in rows:
-#         if len(fields) < 2:
-#             continue
-#         keymap_dict[fields[0]] = fields[1]
-#     return Keymap(keymap_dict)
+def load_path_mapping(path: Path, alias_sep: str = None) -> dict:
+    """
+    Load a mapping from str to str from a file, escaping backslash
+    characters.
+    """
+    rows = load_unicode_tsv(path.read_text())
+    return rows2mapping(rows)
 
 
-def load_all_mappings(parent_dir: Path, alias_sep: str = None) -> dict:
+def load_all_path_mappings(parent_dir: Path, alias_sep: str = None) -> dict:
     """
     Load unicode mappings from all tab-separated value files in a given
     directory.
     """
     mapping = {}
     for tsv in parent_dir.iterdir():
-        new_map = load_unicode_mapping(tsv, alias_sep)
+        new_map = load_path_mapping(tsv, alias_sep)
         mapping.update(new_map)
     return mapping
 
 
 def load_snippets() -> Mapping[str, str]:
     """Load all user snippets."""
-    return load_all_mappings(SNIPPETS_DIR, alias_sep=',')
+    return load_all_path_mappings(SNIPPETS_DIR, alias_sep=',')
 
 
 def load_keymap(name: str) -> Keymap:
     """Load up a particular Keymap by name."""
     '-> keymap'
-    return Keymap(load_unicode_mapping(KEYMAPS_DIR / f'{name}.tsv'))
+
+    users_version = KEYMAPS_DIR / f'{name}.tsv'
+    if users_version.exists():
+        return Keymap(load_path_mapping(users_version))
+
+    default_res = pkgutil.get_data(__name__, f'keymaps/{name}.tsv')
+    if default_res is not None:
+        return Keymap(rows2mapping(load_unicode_tsv(default_res.decode())))
+
+    raise KeyError('Keymap file not found: ' + name)
 
 
 ### Macro Makers:
@@ -320,7 +319,7 @@ def wrapper(prefix: str, suffix: str = None) -> BuilderMod:
 
 ### Constants Again Because Python's Limited Hoisting Can't Handle This
 
-KEYMAP_CACHE = DB(lambda k: {k: load_keymap)
+KEYMAP_CACHE = DB(lambda k: {k: load_keymap(k)})
 
 # load all snippets regardless of request
 # because discrimination unimplemented

@@ -33,8 +33,8 @@ def monospace(fields, metadata):
 def rotate(fields, _):
     '[content] -> builder'
     content = fields[0]
-    flipped_letters = keymapper('rotated')(content)
-    rev_content = reversed(flipped_letters)
+    flipped, _ = keymapper('rotated')(content)
+    rev_content = reversed(flipped)
     return rev_content, {}
 
 def section(fields, metadata):
@@ -131,7 +131,7 @@ def zalgo(fields, _):
             builder.append(chunk)
     return builder, {}
 
-keymaps = [path.stem for path in KEYMAPS_DIR.iterdir()]
+keymaps = [path.stem for path in KEYMAPS_DIR.iterdir() if path.stem == '.tsv']
 
 expanders = {
         **{name:keymapper(name) for name in keymaps},
