@@ -238,8 +238,8 @@ def keymapper(keymap_name: str) -> BuilderMod:
     keymap = keymap_cache[keymap_name]
     def fun(chunks):
         builder = []
-        for chunk in chunks:
-            if not type(chunk) is str:
+        for txt in chunks:
+            if not type(txt) is str:
                 builder.append(chunk)
                 continue
             left = 0
@@ -261,7 +261,7 @@ def keymapper(keymap_name: str) -> BuilderMod:
                             ))
                 left = valid_answer
                 right = left + 1
-            return chunks, {}
+        return builder, {}
     return fun
 
 
