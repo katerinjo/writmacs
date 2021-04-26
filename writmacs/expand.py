@@ -20,6 +20,7 @@ from .parse import parse
 from .macros import expanders, organizers, contextualizers
 from .util import TARGETS, Node
 
+
 def AST2tree(syntax_node):
     name = syntax_node['name']
 

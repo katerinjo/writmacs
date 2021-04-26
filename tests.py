@@ -5,6 +5,9 @@ from writmacs import expand
 all_cases = {
     'html': {
         'Hello, %em{world}!': 'Hello, <em>world</em>!',
+        '<p>Hello,</p>\n<p>%rot{upside-down text}!</p>': (
+            '<p>Hello,</p>\n<p>ʇxǝʇ uʍop-ǝpᴉsdn!</p>'
+        ),
     },
     'md': {
         'the %smallcaps{smallest of Caps}': 'the sᴍᴀʟʟᴇsᴛ ᴏғ Cᴀᴘs',
@@ -29,7 +32,6 @@ for target, cases in all_cases.items():
 {actual}
 """
         assert actual == correct, message
-
 
 
 ### Breaking the rules must fail successfully

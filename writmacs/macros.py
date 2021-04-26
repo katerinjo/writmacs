@@ -33,8 +33,8 @@ def monospace(fields, metadata):
 def rotate(fields, _):
     '[content] -> builder'
     content = fields[0]
-    flipped, _ = keymapper('rotated')(content)
-    rev_content = reversed(flipped)
+    flipped, __ = keymapper('rotated')(content)
+    rev_content = list(reversed(flipped))
     return rev_content, {}
 
 def section(fields, metadata):
