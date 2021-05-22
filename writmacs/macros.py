@@ -45,7 +45,7 @@ def section(fields, metadata):
     if target in ['md', 'txt']:
         return ['## ', *title, '\n\n', *body], {}
     else:
-        return taggifier('section')([*taggifier('h3')(title), *body]), {}
+        return taggifier('section')([*taggifier('h3')(title), *body])
 
 # [content], {target} -> builder
 small_caps = multi_macro(
@@ -57,7 +57,7 @@ small_caps = multi_macro(
 def snippet(fields, metadata):
     snip_name = ''.join(fields[0])
     if snip_name not in SNIPPET_CACHE:
-        return snip_name
+        return [snip_name], {}
     elif metadata['target'] == 'md': # working with markdown, need escapes
         snippet = (SNIPPET_CACHE[snip_name]
                 .replace('\\', r'\\')
@@ -87,7 +87,7 @@ def studly(fields, _):
                     builder.append(character.lower())
             else:
                 builder.append(character)
-        return ''.join(builder)
+        return builder, {}
     return [studly_str(chunk) for chunk in fields[0]], {}
 
 def underlined(fields, metadata):
@@ -102,7 +102,7 @@ def underlined(fields, metadata):
     UNDERLINE = chr(818)
     def underline_str(text):
         if not type(text) is str:
-            return text
+            return text, {}
         builder = []
         for character in text:
             if character == ' ':
@@ -111,7 +111,7 @@ def underlined(fields, metadata):
                 builder.append(character)
                 if character in UNDERLINABLE:
                     builder.append(UNDERLINE)
-        return ''.join(builder)
+        return builder, {}
 
     builder = []
     for chunk in content:
