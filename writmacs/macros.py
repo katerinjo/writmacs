@@ -50,8 +50,8 @@ def section(fields, metadata):
 # [content], {target} -> builder
 small_caps = multi_macro(
     {
-        ('md', 'txt'): keymapper('smallcaps'),
-        ('html',): taggifier('span', Class='smallcaps')
+        ('md', 'txt'): keymapper('small-caps'),
+        ('html',): taggifier('span', Class='small-caps')
     })
 
 def snippet(fields, metadata):
