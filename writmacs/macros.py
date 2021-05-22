@@ -2,7 +2,8 @@ from random import random, randint
 from .util import *
 
 emphasis = multi_macro({
-            ('md', 'txt'): wrapper('*'),
+            ('txt'): keymapper('italic'),
+            ('md'): wrapper('*'),
             ('html',): taggifier('em')
         })
 
@@ -11,7 +12,7 @@ def apply_keymap(fields, _):
     keymap, builder = fields
     return keymapper(keymap)(builder)
 
-def monospace(fields, metadata):
+def monospaced(fields, metadata):
     '[content], {target} -> builder'
     target = metadata['target']
     if target == 'md':
@@ -28,9 +29,9 @@ def monospace(fields, metadata):
             tag = 'code'
         return taggifier(tag)(fields[0])
     if target == 'txt':
-        return keymapper('monospace')(fields[0])
+        return keymapper('monospaced')(fields[0])
 
-def rotate(fields, _):
+def rotated(fields, _):
     '[content] -> builder'
     content = fields[0]
     flipped, __ = keymapper('rotated')(content)
@@ -47,7 +48,7 @@ def section(fields, metadata):
         return taggifier('section')([*taggifier('h3')(title), *body]), {}
 
 # [content], {target} -> builder
-smallcaps = multi_macro(
+small_caps = multi_macro(
     {
         ('md', 'txt'): keymapper('smallcaps'),
         ('html',): taggifier('span', Class='smallcaps')
@@ -89,7 +90,7 @@ def studly(fields, _):
         return ''.join(builder)
     return [studly_str(chunk) for chunk in fields[0]], {}
 
-def underline(fields, metadata):
+def underlined(fields, metadata):
     content = fields[0]
     target = metadata['target']
     if target == 'html':
@@ -118,7 +119,7 @@ def underline(fields, metadata):
     return builder, {}
 
 
-sparkle = wrapper('✧⭒͙°', '✧ﾟ☆')
+sparkly = wrapper('✧⭒͙°', '✧ﾟ☆')
 
 def zalgo(fields, _):
     builder = []
@@ -138,23 +139,24 @@ expanders = {
         'em': emphasis,
         'map': apply_keymap,
         'keymap': apply_keymap,
-        'mono': monospace,
-        'monospace': monospace,
-        'monospaced': monospace,
-        'rot': rotate,
-        'rotate': rotate,
-        'rotated': rotate,
+        'mono': monospaced,
+        'monospace': monospaced,
+        'monospaced': monospaced,
+        'rot': rotated,
+        'rotate': rotated,
+        'rotated': rotated,
         'section': section,
-        'smallcap': smallcaps,
-        'smallcaps': smallcaps,
+        'smallcap': small_caps,
+        'smallcaps': small_caps,
+        'small-caps': small_caps,
         'snip': snippet,
         'snippet': snippet,
-        'sparkle': sparkle,
+        'sparkly': sparkly,
         'studly': studly,
         'title': title,
-        'under': underline,
-        'underline': underline,
-        'underlined': underline,
+        'under': underlined,
+        'underline': underlined,
+        'underlined': underlined,
         'void': zalgo,
         'zalgo': zalgo,
         }
