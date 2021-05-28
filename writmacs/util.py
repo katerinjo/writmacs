@@ -6,7 +6,7 @@ Basic classes/types, constants, and helper functions.
 from pathlib import Path
 import pkgutil
 import re
-from typing import TypeVar, Sequence, Mapping, Callable, Any, Tuple
+from typing import *
 
 
 ### Constants
@@ -103,13 +103,13 @@ class Node:
         return self.to_str()
 
 
-Builder = Sequence[TypeVar('S', str, Token)]
-Forest = Sequence[TypeVar('T', str, Node)]
+Builder = Sequence[Union[str, Token]]
+Forest = Sequence[Union[str, Node]]
 Metadata = dict
 # TODO: "TextMod" suggests analogous return type to BuilderMod
 #       Come up with better names.
 TextMod = Callable[[str], str]
-BuilderMod = Callable[[Builder], Tuple[Builder, Metadata]]
+# BuilderMod = Callable[[Builder], Tuple[Builder, Metadata]]
 Macro = Callable[[Sequence[Builder], Metadata], Tuple[Builder, Metadata]]
 
 
@@ -152,7 +152,7 @@ def load_unicode_tsv(tsv: str) -> list:
     return unicode_rows
 
 
-def rows2mapping(rows, alias_sep: str = None) -> dict:
+def rows2mapping(rows, alias_sep: str = ',') -> dict:
     mapping = {}
     for row in rows:
         before, after, *__ = row
@@ -213,12 +213,12 @@ def simple_macro(
     return fun
 
 
-def chop_mapping(aliases2val: Mapping[str, Any]) -> Mapping[str, Any]:
+def chop_mapping(aliases2val: Mapping[Sequence[str], Any]) -> Mapping[str, Any]:
     """
-    Convert a dict whose keys are comma-separated aliases into a dict
+    Convert a dict whose keys are sequences of aliases into a dict
     in which each alias is now a key by itself.
 
-    Example: {'asterisk,star': '*'} -> {'asterisk': '*', 'star': '*'}
+    Example: {('asterisk', 'star'): '*'} -> {'asterisk': '*', 'star': '*'}
     """
     key2val = {}
     for aliases, val in aliases2val.items():
@@ -229,24 +229,22 @@ def chop_mapping(aliases2val: Mapping[str, Any]) -> Mapping[str, Any]:
 
 # TODO: Would it make more sense to concatenate extra arguments instead
 #       of omitting them?
-def multi_macro(format2fun: Mapping[str, BuilderMod]) -> Macro:
+def multi_macro(formats2fun: Mapping[Sequence[str], Macro]) -> Macro:
     """
-    Create a Macro that uses different BuilderMod functions depending on
+    Create a Macro that uses different Macro functions depending on
     target format. Produced Macros only use the last argument given,
     all others will be ignored.
     """
-    format2fun = chop_mapping(format2fun)
+    format2fun = chop_mapping(formats2fun)
     def fun(fields, metadata):
         # when in doubt do nothing
         if not metadata['target'] in format2fun:
             return fields[-1], {}
-        return format2fun[metadata['target']](fields[-1])
+        return format2fun[metadata['target']](fields, {})
     return fun
 
 
-### Builder Modifier Makers:
-
-def keymapper(keymap_name: str) -> BuilderMod:
+def keymapper(keymap_name: str) -> Macro:
     """
     Given the name of a Keymap, produce a function that applies the
     Keymap to lists of strings.
@@ -254,7 +252,8 @@ def keymapper(keymap_name: str) -> BuilderMod:
     # if keymap_name not in KEYMAP_CACHE:
     #     KEYMAP_CACHE[keymap_name] = load_keymap(keymap_name)
     keymap = KEYMAP_CACHE[keymap_name]
-    def fun(chunks):
+    def fun(fields, __):
+        chunks = fields[0]
         builder = []
         for txt in chunks:
             if not type(txt) is str:
@@ -283,7 +282,7 @@ def keymapper(keymap_name: str) -> BuilderMod:
     return fun
 
 
-def taggifier(tag: str, **kwargs) -> BuilderMod:
+def taggifier(tag: str, **kwargs) -> Macro:
     """
     Create a Builder Modifier that wraps the text in HTML tags.
 
@@ -291,7 +290,8 @@ def taggifier(tag: str, **kwargs) -> BuilderMod:
     arguments. All attributes are forced to be lowercase so you can
     avoid name collisions by capitalizing words like "class".
     """
-    def out_fun(builder):
+    def out_fun(fields, __):
+        builder = fields[0]
         prefix_builder = ['<' + tag]
         for k, v in kwargs.items():
             prefix_builder.append(f' {k.lower()}="{v}"')
@@ -302,7 +302,7 @@ def taggifier(tag: str, **kwargs) -> BuilderMod:
     return out_fun
 
 
-def wrapper(prefix: str, suffix: str = None) -> BuilderMod:
+def wrapper(prefix: str, suffix: str = None) -> Macro:
     """
     Create a Builder Modifier that wraps text with a string prefix and
     suffix.
@@ -312,7 +312,9 @@ def wrapper(prefix: str, suffix: str = None) -> BuilderMod:
     """
     if suffix is None:
         suffix = prefix
-    def fun(builder):
+    def fun(fields, __):
+        builder = fields[0]
+        assert type(builder[0]) is str, f'DEBUG!! got: {builder}'
         return [Token(prefix), *builder, Token(suffix)], {}
     return fun
 
