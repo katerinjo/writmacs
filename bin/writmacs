@@ -7,4 +7,4 @@ target_format = sys.argv[1] if len(sys.argv) == 2 else 'md'
 
 writ = sys.stdin.read()[:-1] # Remove extra newline that bash inserts
 
-print(writmacs.expand(writ, target=target_format)[0]) # Print text only
+print(writmacs.expand(writ, {'target': target_format})[0]) # Print text only
