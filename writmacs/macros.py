@@ -1,22 +1,41 @@
 from random import random, randint
 from .util import *
 
-emphasis = multi_macro({
-            ('txt'): keymapper('italic'),
-            ('md'): wrapper('*'),
+"""
+Emphasize text.
+
+Text: unicode italic characters
+Markdown: wrap in asterisks
+HTML: wrap with <em> tag
+"""
+emphasis: Macro = multi_macro({
+            ('txt',): keymapper('italic'),
+            ('md',): wrapper('*'),
             ('html',): taggifier('em')
         })
 
-def apply_keymap(fields, _):
-    '[keymap name str, content builder] -> builder'
-    keymap, builder = fields
-    return keymapper(keymap)(builder)
+def apply_keymap(fields, context):
+    """
+    Apply a keymapping to text.
 
-def monospaced(fields, metadata):
-    '[content], {target} -> builder'
-    target = metadata['target']
+    Fields are:
+      - keymap name
+      - text to be transformed
+    """
+    keymap, builder = fields
+    return keymapper(keymap)([builder], context)
+
+def monospaced(fields, context):
+    """
+    Make text monospaced.
+
+    In HTML: use tags
+    In Markdown: use backticks
+    In Text: use Unicode characters
+    """
+    target = context['target']
     if target == 'md':
-        return wrapper('`')(fields[0])
+        return wrapper('`')(fields, context)
     if target == 'html':
         multiline = False
         for chunk in fields[0]:
@@ -27,38 +46,59 @@ def monospaced(fields, metadata):
             tag = 'pre'
         else:
             tag = 'code'
-        return taggifier(tag)(fields[0])
+        return taggifier(tag)(fields, context)
     if target == 'txt':
-        return keymapper('monospaced')(fields[0])
+        return keymapper('monospaced')(fields, context)
 
-def rotated(fields, _):
-    '[content] -> builder'
+def rotated(fields, context):
+    """
+    Rotate text upside-down.
+
+    Unicode characters are used in all cases because there's no HTML
+    support for this.
+    """
     content = fields[0]
-    flipped, __ = keymapper('rotated')(content)
+    flipped, data_out = keymapper('rotated')(fields, context)
     rev_content = list(reversed(flipped))
-    return rev_content, {}
+    return rev_content, data_out
 
-def section(fields, metadata):
-    '[title, body] -> builder'
-    target = metadata['target']
-    title, body = fields
+def section(fields, context):
+    """
+    Demarcate a body of text and its heading.
+
+    In Markdown and text, merely mark the heading.
+
+    For HTML, wrap the heading in <h3> tags and the entire thing in
+    <section> tags
+    """
+    target = context['target']
+    heading, body = fields
     if target in ['md', 'txt']:
-        return ['## ', *title, '\n\n', *body], {}
+        return ['## ', *heading, '\n\n', *body], {}
     else:
-        return taggifier('section')([*taggifier('h3')(title), *body])
+        heading_builder, heading_data = taggifier('h3')([heading], context)
+        body_builder, body_data = taggifier('section')([body], context)
 
-# [content], {target} -> builder
+        return heading_builder + body_builder, {**body_meta, **heading_meta}
+
+"""
+Markdown & Text: use Unicode characters to immitate proper small caps
+HTML: apply a 'small-caps' class to the text
+"""
 small_caps = multi_macro(
     {
         ('md', 'txt'): keymapper('small-caps'),
         ('html',): taggifier('span', Class='small-caps')
     })
 
-def snippet(fields, metadata):
+def snippet(fields, context):
+    """
+    Insert a snippet by name.
+    """
     snip_name = ''.join(fields[0])
     if snip_name not in SNIPPET_CACHE:
         return [snip_name], {}
-    elif metadata['target'] == 'md': # working with markdown, need escapes
+    elif context['target'] == 'md': # working with markdown, need escapes
         snippet = (SNIPPET_CACHE[snip_name]
                 .replace('\\', r'\\')
                 .replace('_', r'\_')
@@ -67,10 +107,21 @@ def snippet(fields, metadata):
     else:
         return SNIPPET_CACHE[snip_name], {}
 
-def title(fields, metadata):
+def title(fields, __):
+    """
+    Assign a title to the document.
+
+    This is metadata only; nothing is added to the body text.
+    """
     return [], {'title': fields[0]}
 
-def studly(fields, _):
+def studly(fields, __):
+    """
+    Render letters as either capital or lowercase almost at random.
+
+    The letter I is always lowercase and L is always capital, to avoid
+    confusion.
+    """
     def studly_str(text):
         if not type(text) is str:
             return text
@@ -90,11 +141,17 @@ def studly(fields, _):
         return builder, {}
     return [studly_str(chunk) for chunk in fields[0]], {}
 
-def underlined(fields, metadata):
+def underlined(fields, context):
+    """
+    Underline text.
+
+    Markdown & Text: apply a diacritic to mimic an underline
+    HTML: apply an 'underlined' class to the text
+    """
     content = fields[0]
-    target = metadata['target']
+    target = context['target']
     if target == 'html':
-        return taggifier('span', Class='underlined')(content)
+        return taggifier('span', Class='underlined')(content, {})
     UNDERLINABLE = set(
             '0123456789ABCDEFGHIJKLMNOPRSTUVWXYZabcdefhiklmnorstuvwxz'
             + 'ĉĈĥĤŭŬêÊĴĜ().?!:-\'"+=*&^%$#@`~'
@@ -119,9 +176,15 @@ def underlined(fields, metadata):
     return builder, {}
 
 
+"""
+Wrap text in sparkle emoticons.
+"""
 sparkly = wrapper('✧⭒͙°', '✧ﾟ☆')
 
-def zalgo(fields, _):
+def zalgo(fields, __):
+    """
+    Apply many random diacritics to text.
+    """
     builder = []
     for chunk in fields[0]:
         if type(chunk) is str:
@@ -134,31 +197,44 @@ def zalgo(fields, _):
 
 keymaps = [path.stem for path in KEYMAPS_DIR.iterdir() if path.stem == '.tsv']
 
-expanders = {
+expanders: Dict[str, Macro] = {
+        # unless overwritten, all keymaps may be invoked by name
         **{name:keymapper(name) for name in keymaps},
+
         'em': emphasis,
+
         'map': apply_keymap,
         'keymap': apply_keymap,
+
         'mono': monospaced,
         'monospace': monospaced,
         'monospaced': monospaced,
+
         'rot': rotated,
         'rotate': rotated,
         'rotated': rotated,
+
         'section': section,
+
         'smallcap': small_caps,
         'smallcaps': small_caps,
         'small-caps': small_caps,
+
         'snip': snippet,
         'snippet': snippet,
+
         'sparkly': sparkly,
+
         'studly': studly,
+
         'title': title,
+
         'under': underlined,
         'underline': underlined,
         'underlined': underlined,
+
         'void': zalgo,
         'zalgo': zalgo,
         }
-organizers = {}
-contextualizers = {}
+organizers: Dict[str, Callable] = {}
+contextualizers: Dict[str, Callable] = {}
