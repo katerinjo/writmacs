@@ -122,7 +122,7 @@ def studly(fields, __):
     The letter I is always lowercase and L is always capital, to avoid
     confusion.
     """
-    def studly_str(text):
+    def studly_str(text) -> str:
         if not type(text) is str:
             return text
         builder = []
@@ -138,7 +138,7 @@ def studly(fields, __):
                     builder.append(character.lower())
             else:
                 builder.append(character)
-        return builder, {}
+        return ''.join(builder)
     return [studly_str(chunk) for chunk in fields[0]], {}
 
 def underlined(fields, context):
@@ -156,8 +156,10 @@ def underlined(fields, context):
             '0123456789ABCDEFGHIJKLMNOPRSTUVWXYZabcdefhiklmnorstuvwxz'
             + 'ĉĈĥĤŭŬêÊĴĜ().?!:-\'"+=*&^%$#@`~'
             )
-    UNDERLINE = chr(818)
-    def underline_str(text):
+    # UNDERLINE = chr(int('952', 16))
+    # UNDERLINE = chr(int('331', 16))
+    UNDERLINE = chr(int('320', 16))
+    def underline_str(text) -> str:
         if not type(text) is str:
             return text, {}
         builder = []
@@ -168,7 +170,7 @@ def underlined(fields, context):
                 builder.append(character)
                 if character in UNDERLINABLE:
                     builder.append(UNDERLINE)
-        return builder, {}
+        return ''.join(builder)
 
     builder = []
     for chunk in content:
