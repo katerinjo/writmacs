@@ -2,3 +2,43 @@
 # Writmacs
 
 This is a Python library for producing documents with special formatting in HTML, markdown, and plain text.
+
+# Target formats
+
+<dl>
+<dt>HTML (<code>&quot;html&quot;</code>)</dt>
+
+<dd>accessible, semantic, featureful</dd>
+
+<dt>Markdown (<code>&quot;md&quot;</code>)</dt>
+
+<dd>hacky, mainly for instant messaging</dd>
+
+<dt>Text (<code>&quot;txt&quot;</code>)</dt>
+
+<dd>very hacky, for oppressive evironments that don't give you any other options</dd>
+</dl>
+
+# Transformations
+
+| Macro       | Text Result                | Markdown Result            | HTML Result                                                                |
+|:------------|:---------------------------|:---------------------------|:---------------------------------------------------------------------------|
+| Emphasized  | <code>𝘦𝘹𝘢𝘮𝘱𝘭𝘦</code>       | <code>*example*</code>     | <code>&lt;em&gt;example&lt;/em&gt;</code>                                  |
+| Monospaced  | <code>𝚎𝚡𝚊𝚖𝚙𝚕𝚎</code>       | <code>`example`</code>     | <code>&lt;code&gt;example&lt;/code&gt;</code>                              |
+| Rotated     | <code>ǝ˥dɯɐxǝ</code>       | <code>ǝ˥dɯɐxǝ</code>       | <code>ǝ˥dɯɐxǝ</code>                                                       |
+| Small Caps  | <code>ᴇxᴀᴍᴘʟᴇ</code>       | <code>ᴇxᴀᴍᴘʟᴇ</code>       | <code>&lt;span class=&quot;small-caps&quot;&gt;example&lt;/span&gt;</code> |
+| Sparkly     | <code>✧⭒͙°example✧ﾟ☆</code> | <code>✧⭒͙°example✧ﾟ☆</code> | <code>✧⭒͙°example✧ﾟ☆</code>                                                 |
+| Studly      | <code>eXaMPLE</code>       | <code>ExAmpLE</code>       | <code>exAmpLe</code>                                                       |
+| Underlined  | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>&lt;span class=&quot;underlined&quot;&gt;example&lt;/span&gt;</code> |
+
+
+# To-Do
+
+- more transformations
+  - zalgo (WIP)
+  - superscript (WIP)
+  - snippets (WIP)
+  - wide
+  - subscript
+- pop-up window for quick text insertion
+- command line access to individual transformation functions
