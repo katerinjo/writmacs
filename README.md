@@ -1,7 +1,7 @@
 
 # Writmacs
 
-This is a Python library for producing documents with special formatting in HTML, markdown, and plain text.
+This is a Python library for producing documents with special formatting in HTML, Markdown, and plain text.
 
 # Target formats
 
@@ -21,15 +21,15 @@ This is a Python library for producing documents with special formatting in HTML
 
 # Transformations
 
-| Macro       | Text Result                | Markdown Result            | HTML Result                                                                |
-|:------------|:---------------------------|:---------------------------|:---------------------------------------------------------------------------|
-| Emphasized  | <code>𝘦𝘹𝘢𝘮𝘱𝘭𝘦</code>       | <code>*example*</code>     | <code>&lt;em&gt;example&lt;/em&gt;</code>                                  |
-| Monospaced  | <code>𝚎𝚡𝚊𝚖𝚙𝚕𝚎</code>       | <code>`example`</code>     | <code>&lt;code&gt;example&lt;/code&gt;</code>                              |
-| Rotated     | <code>ǝ˥dɯɐxǝ</code>       | <code>ǝ˥dɯɐxǝ</code>       | <code>ǝ˥dɯɐxǝ</code>                                                       |
-| Small Caps  | <code>ᴇxᴀᴍᴘʟᴇ</code>       | <code>ᴇxᴀᴍᴘʟᴇ</code>       | <code>&lt;span class=&quot;small-caps&quot;&gt;example&lt;/span&gt;</code> |
-| Sparkly     | <code>✧⭒͙°example✧ﾟ☆</code> | <code>✧⭒͙°example✧ﾟ☆</code> | <code>✧⭒͙°example✧ﾟ☆</code>                                                 |
-| Studly      | <code>eXaMPLE</code>       | <code>ExAmpLE</code>       | <code>exAmpLe</code>                                                       |
-| Underlined  | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>&lt;span class=&quot;underlined&quot;&gt;example&lt;/span&gt;</code> |
+| Macro       | Text Result                | Markdown Result                    | HTML Result                                                                |
+|:------------|:---------------------------|:-----------------------------------|:---------------------------------------------------------------------------|
+| Emphasized  | <code>𝘦𝘹𝘢𝘮𝘱𝘭𝘦</code>       | <code>&ast;example&ast;</code>     | <code>&lt;em&gt;example&lt;/em&gt;</code>                                  |
+| Monospaced  | <code>𝚎𝚡𝚊𝚖𝚙𝚕𝚎</code>       | <code>&grave;example&grave;</code> | <code>&lt;code&gt;example&lt;/code&gt;</code>                              |
+| Rotated     | <code>ǝ˥dɯɐxǝ</code>       | <code>ǝ˥dɯɐxǝ</code>               | <code>ǝ˥dɯɐxǝ</code>                                                       |
+| Small Caps  | <code>ᴇxᴀᴍᴘʟᴇ</code>       | <code>ᴇxᴀᴍᴘʟᴇ</code>               | <code>&lt;span class=&quot;small-caps&quot;&gt;example&lt;/span&gt;</code> |
+| Sparkly     | <code>✧⭒͙°example✧ﾟ☆</code> | <code>✧⭒͙°example✧ﾟ☆</code>         | <code>✧⭒͙°example✧ﾟ☆</code>                                                 |
+| Studly      | <code>eXaMPLE</code>       | <code>ExAmpLE</code>               | <code>exAmpLe</code>                                                       |
+| Underlined  | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>e̠x̠a̠m̠pl̠e̠</code>               | <code>&lt;span class=&quot;underlined&quot;&gt;example&lt;/span&gt;</code> |
 
 
 # To-Do
