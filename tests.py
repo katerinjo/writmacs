@@ -1,6 +1,6 @@
 from writmacs import expand
 
-### Given this input, expect this output
+# Given this input, expect this output
 
 all_cases = {
     'html': {
@@ -44,8 +44,23 @@ for target, cases in all_cases.items():
 """
         assert actual == correct, message
 
+# Non-deterministic cases
 
-### Breaking the rules must fail successfully
+### Studly
+
+studly = expand('%studly(Ievan Polkka)')[0]
+
+assert studly.lower() == 'ievan polkka', (
+    f"Studly mutates underlying alphabet: {studly}"
+)
+assert studly[0] == 'i', (
+    f"Studly case failed to render I as lowercase: {studly}"
+)
+assert studly[8] == 'L', (
+    f"Studly case failed to render L as capital: {studly}"
+)
+
+# Breaking the rules must fail successfully
 
 try:
     expand('%snippet(9ece6796-b989-4137-b2d1-38d969f82c2a)')
@@ -55,6 +70,6 @@ except:
 
 
 
-### Nothing broke, we succeeded
+# Nothing broke, we succeeded
 
 print('All tests passed.')
