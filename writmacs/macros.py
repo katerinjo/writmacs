@@ -159,9 +159,9 @@ def underlined(fields, context):
     # UNDERLINE = chr(int('952', 16))
     # UNDERLINE = chr(int('331', 16))
     UNDERLINE = chr(int('320', 16))
-    def underline_str(text) -> str:
+    def underline_str(text) -> Union[str, Token]:
         if not type(text) is str:
-            return text, {}
+            return text
         builder = []
         for character in text:
             if character == ' ':
