@@ -6,7 +6,9 @@ all_cases = {
     'html': {
         'Hello, %em{world}!': 'Hello, <em>world</em>!',
 
-        'monospaced': 'monospaced',
+        '%monospaced(\nhi\n)': '<code>hi</code>',
+
+        '%monospaced`\nhi\n`': '<pre>\nhi\n</pre>',
 
         '<p>Hello,</p>\n<p>%rot{upside-down text}!</p>': (
             '<p>Hello,</p>\n<p>ʇxǝʇ uʍop-ǝpᴉsdn!</p>'
@@ -46,7 +48,7 @@ for target, cases in all_cases.items():
 
 # Non-deterministic cases
 
-### Studly
+## Studly
 
 studly = expand('%studly(Ievan Polkka)')[0]
 
@@ -68,7 +70,9 @@ try:
 except:
     pass
 
+# Helpers
 
+## strip
 
 # Nothing broke, we succeeded
 

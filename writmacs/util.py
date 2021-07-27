@@ -319,6 +319,38 @@ def wrapper(prefix: str, suffix: str = None) -> Macro:
     return fun
 
 
+### Misc Helpers
+
+def strip_seq(seq):
+    left_chomp = 0 # will point at first kept item
+    while (
+            left_chomp < len(seq)
+            and isinstance(seq[left_chomp], str)
+            and (seq[left_chomp].isspace() or seq[left_chomp] == '')
+            ):
+        left_chomp += 1
+
+    right_chomp = 1 # will point at last kept item
+    while (
+            len(seq) - right_chomp > left_chomp
+            and isinstance(seq[len(seq) - right_chomp], str)
+            and (
+                seq[len(seq) - right_chomp].isspace()
+                or seq[len(seq) - right_chomp] == ''
+            )):
+        right_chomp += 1
+
+    # +1 to convert to exclusive range
+    chomped = seq[left_chomp:(len(seq) - right_chomp) + 1]
+
+    if len(chomped) > 0:
+        if isinstance(chomped[0], str):
+            chomped[0] = chomped[0].lstrip()
+        if isinstance(chomped[-1], str):
+            chomped[-1] = chomped[-1].rstrip()
+
+    return chomped
+
 ### Constants Again Because Python's Limited Hoisting Can't Handle This
 
 KEYMAP_CACHE = DB(lambda k: {k: load_keymap(k)})

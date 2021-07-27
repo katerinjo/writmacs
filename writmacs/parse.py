@@ -1,3 +1,5 @@
+from .util import strip_seq
+
 INTERPOLATE = '%'
 TERMINATE = ';'
 BRACKETS = {
@@ -22,6 +24,7 @@ def tree_print(chunks, depth=0):
         else:
             print('  ' * depth + chunk)
 
+
 def parse(text):
     breadcrumbs = []
     frontier = 0
@@ -37,7 +40,6 @@ def parse(text):
         return text[frontier:frontier + len(ladder)] == ladder
 
     def parse_prose():
-        # print('PARSE_PROSE')
         nonlocal frontier
         start = frontier
         chunks = []
@@ -50,28 +52,23 @@ def parse(text):
                     ):
                 frontier += 1
 
-            # print('FRONTIER INCREASED TO', frontier)
             if frontier > start:
                 chunks.append(text[start:frontier])
                 start = frontier
 
             if frontier == len(text):
-                # print('REACHED END')
-                return chunks
+                return strip_seq(chunks)
 
             if at_ladder():
-                # print('REACHED LADDER')
                 frontier += len(breadcrumbs[-1])
                 breadcrumbs.pop()
-                return chunks
+                return strip_seq(chunks)
 
             if text[frontier] == INTERPOLATE:
-                # print('GO DEEPER')
                 chunks.append(parse_macro())
                 start = frontier
 
     def parse_macro():
-        # print('PARSE_MACRO')
         nonlocal frontier
         name_start = frontier + 1 # skip INTERPOLATE character
         frontier = name_start
@@ -84,8 +81,6 @@ def parse(text):
                 ):
             frontier += 1
 
-        # print('NAME END, BRAC BEGIN?', frontier, text[frontier])
-
         name = text[name_start:frontier]
         vals = []
         bracs = []
@@ -97,12 +92,8 @@ def parse(text):
             bracket = text[bracket_start:frontier]
             bracs.append(bracket)
 
-            # print('BRACS', bracs)
-
             # reverse bracket direction for close bracket string a.k.a. ladder
             breadcrumbs.append(BRACKETS[bracket[0]] * len(bracket))
-
-            # print('BREADCRUMBS', breadcrumbs)
 
             if bracket.startswith('`'): # literal quotation
                 prose_start = frontier
