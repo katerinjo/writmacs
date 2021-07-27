@@ -33,12 +33,13 @@ def monospaced(fields, context):
     In Markdown: use backticks
     In Text: use Unicode characters
     """
+    content = fields[0]
     target = context['target']
     if target == 'md':
-        return wrapper('`')(fields, context)
+        return wrapper('`')([content], context)
     if target == 'html':
         multiline = False
-        for chunk in fields[0]:
+        for chunk in content:
             if type(chunk) is str and '\n' in chunk:
                 multiline = True
                 break
@@ -46,9 +47,9 @@ def monospaced(fields, context):
             tag = 'pre'
         else:
             tag = 'code'
-        return taggifier(tag)(fields, context)
+        return taggifier(tag)([content], context)
     if target == 'txt':
-        return keymapper('monospaced')(fields, context)
+        return keymapper('monospaced')([content], context)
 
 def rotated(fields, context):
     """
