@@ -3,7 +3,7 @@
 
 This is a Python library for producing documents with special formatting in HTML, Markdown, and plain text.
 
-# Target formats
+## Target formats
 
 <dl>
 <dt>HTML (<code>&quot;html&quot;</code>)</dt>
@@ -19,7 +19,7 @@ This is a Python library for producing documents with special formatting in HTML
 <dd>very hacky, for oppressive evironments that don't give you any other options</dd>
 </dl>
 
-# Transformations
+## Transformations
 
 | Macro       | Text Result                | Markdown Result                    | HTML Result                                                                |
 |:------------|:---------------------------|:-----------------------------------|:---------------------------------------------------------------------------|
@@ -32,7 +32,7 @@ This is a Python library for producing documents with special formatting in HTML
 | Underlined  | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>e̠x̠a̠m̠pl̠e̠</code>               | <code>&lt;span class=&quot;underlined&quot;&gt;example&lt;/span&gt;</code> |
 
 
-# To-Do
+## To-Do
 
 - more transformations
   - zalgo (WIP)
