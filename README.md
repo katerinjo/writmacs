@@ -19,6 +19,24 @@ This is a Python library for producing documents with special formatting in HTML
 <dd>very hacky, for oppressive evironments that don't give you any other options</dd>
 </dl>
 
+## Syntax
+
+Text is marked up with syntax similar to LaTeX:
+
+```
+I used %em{emphasis} in this sentence.
+```
+
+Parens may be curly braces, square brackets, parentheses, quotes, and backticks. They may be duplicated to avoid conflicting with characters inside.
+
+```
+%mono{ %smallcaps( %studly{{{
+  You can have "{{}}" in here without breaking anything.
+
+  It takes three "}"s to close this tag.
+}}})}
+```
+
 ## Transformations
 
 | Macro       | Text Result                | Markdown Result                    | HTML Result                                                                |
