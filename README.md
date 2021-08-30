@@ -39,15 +39,15 @@ Parens may be curly braces, square brackets, parentheses, quotes, and backticks.
 
 ## Transformations
 
-| Macro       | Text Result                | Markdown Result                    | HTML Result                                                                |
-|:------------|:---------------------------|:-----------------------------------|:---------------------------------------------------------------------------|
-| Emphasized  | <code>𝘦𝘹𝘢𝘮𝘱𝘭𝘦</code>       | <code>&ast;example&ast;</code>     | <code>&lt;em&gt;example&lt;/em&gt;</code>                                  |
-| Monospaced  | <code>𝚎𝚡𝚊𝚖𝚙𝚕𝚎</code>       | <code>&grave;example&grave;</code> | <code>&lt;code&gt;example&lt;/code&gt;</code>                              |
-| Rotated     | <code>ǝ˥dɯɐxǝ</code>       | <code>ǝ˥dɯɐxǝ</code>               | <code>ǝ˥dɯɐxǝ</code>                                                       |
-| Small Caps  | <code>ᴇxᴀᴍᴘʟᴇ</code>       | <code>ᴇxᴀᴍᴘʟᴇ</code>               | <code>&lt;span class=&quot;small-caps&quot;&gt;example&lt;/span&gt;</code> |
-| Sparkly     | <code>✧⭒͙°example✧ﾟ☆</code> | <code>✧⭒͙°example✧ﾟ☆</code>         | <code>✧⭒͙°example✧ﾟ☆</code>                                                 |
-| Studly      | <code>eXaMPLE</code>       | <code>ExAmpLE</code>               | <code>exAmpLe</code>                                                       |
-| Underlined  | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>e̠x̠a̠m̠pl̠e̠</code>               | <code>&lt;span class=&quot;underlined&quot;&gt;example&lt;/span&gt;</code> |
+| Macro       | Tag Names        | Text Result                | Markdown Result                    | HTML Result                                                                |
+|:------------|:-----------------|:---------------------------|:-----------------------------------|:---------------------------------------------------------------------------|
+| Emphasized  | em, emphasize    | <code>𝘦𝘹𝘢𝘮𝘱𝘭𝘦</code>       | <code>&ast;example&ast;</code>     | <code>&lt;em&gt;example&lt;/em&gt;</code>                                  |
+| Monospaced  | mono, monospace  | <code>𝚎𝚡𝚊𝚖𝚙𝚕𝚎</code>       | <code>&grave;example&grave;</code> | <code>&lt;code&gt;example&lt;/code&gt;</code>                              |
+| Rotated     | rot, rotate      | <code>ǝ˥dɯɐxǝ</code>       | <code>ǝ˥dɯɐxǝ</code>               | <code>ǝ˥dɯɐxǝ</code>                                                       |
+| Small Caps  | smallcaps        | <code>ᴇxᴀᴍᴘʟᴇ</code>       | <code>ᴇxᴀᴍᴘʟᴇ</code>               | <code>&lt;span class=&quot;small-caps&quot;&gt;example&lt;/span&gt;</code> |
+| Sparkly     | sparkle, sparkly | <code>✧⭒͙°example✧ﾟ☆</code> | <code>✧⭒͙°example✧ﾟ☆</code>         | <code>✧⭒͙°example✧ﾟ☆</code>                                                 |
+| Studly      | studly           | <code>eXaMPLE</code>       | <code>ExAmpLE</code>               | <code>exAmpLe</code>                                                       |
+| Underlined  | under, underline | <code>e̠x̠a̠m̠pl̠e̠</code>       | <code>e̠x̠a̠m̠pl̠e̠</code>               | <code>&lt;span class=&quot;underlined&quot;&gt;example&lt;/span&gt;</code> |
 
 
 ## To-Do
