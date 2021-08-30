@@ -205,6 +205,7 @@ expanders: Dict[str, Macro] = {
         **{name:keymapper(name) for name in keymaps},
 
         'em': emphasis,
+        'emphasize': emphasis,
 
         'map': apply_keymap,
         'keymap': apply_keymap,
@@ -227,6 +228,7 @@ expanders: Dict[str, Macro] = {
         'snippet': snippet,
 
         'sparkly': sparkly,
+        'sparkle': sparkly,
 
         'studly': studly,
 
