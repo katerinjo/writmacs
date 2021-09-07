@@ -224,8 +224,8 @@ expanders: Dict[str, Macro] = {
         'smallcaps': small_caps,
         'small-caps': small_caps,
 
-        'snip': snippet,
-        'snippet': snippet,
+        # 'snip': snippet,
+        # 'snippet': snippet,
 
         'sparkly': sparkly,
         'sparkle': sparkly,
