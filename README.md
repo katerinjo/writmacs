@@ -37,6 +37,14 @@ Parens may be curly braces, square brackets, parentheses, quotes, and backticks.
 }}})}
 ```
 
+Text inside backticks is considered literal, so no internal tagging will be interpreted.
+
+```
+%sparkle`` This %em{ tag } is kept, and so are the surrounding spaces. ``
+
+---> ✧⭒͙° This %em{ tag } is kept, and so are the surrounding spaces. ✧ﾟ☆
+```
+
 ## Transformations
 
 | Macro       | Tag Names        | Text Result                | Markdown Result                    | HTML Result                                                                |
